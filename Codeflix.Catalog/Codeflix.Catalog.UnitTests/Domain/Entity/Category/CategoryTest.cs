@@ -88,44 +88,65 @@ namespace Codeflix.Catalog.UnitTests.Domain.Entity.Category
         }
 
 
-        [Theory(DisplayName = nameof(InstantiateErrorWhenDescriptionIsNull))]
+        [Theory(DisplayName = nameof(InstantiateErrorWhenNameIsLessThan3Characters))]
         [Trait("Domain", "Category - Aggregates")]
-        [InlineData("12")]
-        [InlineData("1")]
-        [InlineData("a")]
-        [InlineData("ab")]
-        public void InstantiateErrorWhenNameLessThan3Caracteres(string invalidName)
+        [MemberData(nameof(GetNamesWithLessThan3Characters), parameters: 10)]
+        public void InstantiateErrorWhenNameIsLessThan3Characters(string invalidName)
         {
-            Action action = () => new DomainEntity.Category(invalidName, "Description");
+            var validCategory = _categoryFixture.GetValidCategory();
+
+            Action action =
+                () => new DomainEntity.Category(invalidName, validCategory.Description);
 
             action.Should()
                 .Throw<EntityValidationException>()
-                .WithMessage("Name should be at leats 3 caracters long");
+                .WithMessage("Name should be at least 3 characters long");
         }
 
-        [Fact(DisplayName = nameof(InstantiateErrorWhenNameGreaterThan255Caracteres))]
-        [Trait("Domain", "Category - Aggregates")]
-        public void InstantiateErrorWhenNameGreaterThan255Caracteres()
+        public static IEnumerable<object[]> GetNamesWithLessThan3Characters(int numberOfTests = 6)
         {
+            var fixture = new CategoryTestFixture();
+
+            for (int i = 0; i < numberOfTests; i++)
+            {
+                var isOdd = i % 2 == 1;
+                yield return new object[] { fixture.GetValidCategoryName()[..(isOdd ? 1 : 2)] };
+            }
+        }
+
+
+        [Fact(DisplayName = nameof(UpdateErrorWhenNameIsGreaterThan255Characters))]
+        [Trait("Domain", "Category - Aggregates")]
+        public void UpdateErrorWhenNameIsGreaterThan255Characters()
+        {
+            var category = _categoryFixture.GetValidCategory();
             var invalidName = _categoryFixture.Faker.Lorem.Letter(256);
-            Action action = () => new DomainEntity.Category(invalidName, "Description");
+
+            Action action =
+                () => category.Update(invalidName);
 
             action.Should()
                 .Throw<EntityValidationException>()
-                .WithMessage("Name should be less or equal 255 caracters long");
-
+                .WithMessage("Name should be less or equal 255 characters long");
         }
 
-        [Fact(DisplayName = nameof(InstantiateErrorWhenDescriptionGreaterThan10kCaracteres))]
+
+        [Fact(DisplayName = nameof(UpdateErrorWhenDescriptionIsGreaterThan10_000Characters))]
         [Trait("Domain", "Category - Aggregates")]
-        public void InstantiateErrorWhenDescriptionGreaterThan10kCaracteres()
+        public void UpdateErrorWhenDescriptionIsGreaterThan10_000Characters()
         {
-            var invalidDescription = _categoryFixture.Faker.Lorem.Letter(10_001);
-            Action action = () => new DomainEntity.Category("Name", invalidDescription);
+            var category = _categoryFixture.GetValidCategory();
+            var invalidDescription =
+                _categoryFixture.Faker.Commerce.ProductDescription();
+            while (invalidDescription.Length <= 10_000)
+                invalidDescription = $"{invalidDescription} {_categoryFixture.Faker.Commerce.ProductDescription()}";
+
+            Action action =
+                () => category.Update("Category New Name", invalidDescription);
 
             action.Should()
                 .Throw<EntityValidationException>()
-                .WithMessage("Description should be less or equal 10k caracters long");
+                .WithMessage("Description should be less or equal 10000 characters long");
         }
 
         [Fact(DisplayName = nameof(Activate))]
@@ -183,23 +204,22 @@ namespace Codeflix.Catalog.UnitTests.Domain.Entity.Category
             category.Name.Should().BeEquivalentTo(newValues.Name); 
         }
 
-        [Theory(DisplayName = nameof(UpdateOnlyName))]
+        [Theory(DisplayName = nameof(UpdateErrorWhenNameIsLessThan3Characters))]
         [Trait("Domain", "Category - Aggregates")]
-        [InlineData("12")]
         [InlineData("1")]
+        [InlineData("12")]
         [InlineData("a")]
-        [InlineData("ab")]
-        public void UpdateErroWithInvalidName(string invalidName)
+        [InlineData("ca")]
+        public void UpdateErrorWhenNameIsLessThan3Characters(string invalidName)
         {
-            var validCategory = _categoryFixture.GetValidCategory(); 
+            var category = _categoryFixture.GetValidCategory();
 
-            var category = new DomainEntity.Category(validCategory.Name, validCategory.Description, true);
-
-            Action action = () => category.Update(invalidName);
+            Action action =
+                () => category.Update(invalidName);
 
             action.Should()
-              .Throw<EntityValidationException>()
-              .WithMessage("Name should be at leats 3 caracters long");
+                .Throw<EntityValidationException>()
+                .WithMessage("Name should be at least 3 characters long");
         }
 
         [Fact(DisplayName = nameof(UpdateOnlyDescription))]
