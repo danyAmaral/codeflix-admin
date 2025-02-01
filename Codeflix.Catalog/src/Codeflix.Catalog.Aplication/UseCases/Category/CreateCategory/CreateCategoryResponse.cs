@@ -1,4 +1,6 @@
-﻿namespace Codeflix.Catalog.Application.UseCases.Category
+﻿using DomainEntity = Codeflix.Catalog.Domain.Entity;
+
+namespace Codeflix.Catalog.Application.UseCases.Category
 {
     public class CreateCategoryResponse
     {
@@ -15,6 +17,11 @@
             Description = description;
             IsActive = isActive;
             CreatedAt = createdAt;
+        }
+
+        public static CreateCategoryResponse FromCategory(DomainEntity.Category category)
+        {
+            return new CreateCategoryResponse(category.Id, category.Name, category.Description, category.IsActive, category.CreatedAt);
         }
 
     }

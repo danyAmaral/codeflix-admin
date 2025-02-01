@@ -21,7 +21,7 @@ namespace Codeflix.Catalog.Application.UseCases.Category.CreateCategory
             await _categoryRepository.Insert(category, cancellationToken);
             await _unitOfWork.Commit(cancellationToken);
 
-            var response = new CreateCategoryResponse(category.Id, category.Name, category.Description, category.IsActive, category.CreatedAt);
+            var response = CreateCategoryResponse.FromCategory(category);
 
             return response;
         }
