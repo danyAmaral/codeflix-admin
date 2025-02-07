@@ -1,16 +1,16 @@
 ﻿using DomainEntity = Codeflix.Catalog.Domain.Entity;
 
-namespace Codeflix.Catalog.Application.UseCases.Category
+namespace Codeflix.Catalog.Application.UseCases.Category.Common
 {
-    public class CreateCategoryResponse
-    {
+    public class CategoryModelResponse
+    {  
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string? Description { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        public CreateCategoryResponse(Guid id, string name, string? description, bool isActive, DateTime createdAt)
+        public CategoryModelResponse(Guid id, string name, string? description, bool isActive, DateTime createdAt)
         {
             Id = id;
             Name = name;
@@ -19,9 +19,9 @@ namespace Codeflix.Catalog.Application.UseCases.Category
             CreatedAt = createdAt;
         }
 
-        public static CreateCategoryResponse FromCategory(DomainEntity.Category category)
+        public static CategoryModelResponse FromCategory(DomainEntity.Category category)
         {
-            return new CreateCategoryResponse(category.Id, category.Name, category.Description, category.IsActive, category.CreatedAt);
+            return new (category.Id, category.Name, category.Description, category.IsActive, category.CreatedAt);
         }
 
     }

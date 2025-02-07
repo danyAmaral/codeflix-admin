@@ -1,9 +1,9 @@
-﻿using Codeflix.Catalog.Domain.Repository;
-using MediatR;
+﻿using Codeflix.Catalog.Application.UseCases.Category.Common;
+using Codeflix.Catalog.Domain.Repository;
 
 namespace Codeflix.Catalog.Application.UseCases.Category.GetCategory
 {
-    public class GetCategory : IRequestHandler<GetCategoryRequest, GetCategoryResponse>
+    public class GetCategory : IGetCategory
     {
         private readonly ICategoryRepository _categoryRepository;
 
@@ -11,11 +11,11 @@ namespace Codeflix.Catalog.Application.UseCases.Category.GetCategory
         {
             _categoryRepository = categoryRepository;
         }
-        public async Task<GetCategoryResponse> Handle(GetCategoryRequest request, CancellationToken cancellationToken)
+        public async Task<CategoryModelResponse> Handle(GetCategoryRequest request, CancellationToken cancellationToken)
         {
             var category = await _categoryRepository.Get(request.Id, cancellationToken);
 
-            return GetCategoryResponse.FromCategory(category);
+            return CategoryModelResponse.FromCategory(category);
         }
     }
 }

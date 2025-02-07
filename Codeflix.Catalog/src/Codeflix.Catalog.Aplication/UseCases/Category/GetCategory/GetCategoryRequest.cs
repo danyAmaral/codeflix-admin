@@ -1,8 +1,9 @@
-﻿using MediatR;
+﻿using Codeflix.Catalog.Application.UseCases.Category.Common;
+using MediatR;
 
 namespace Codeflix.Catalog.Application.UseCases.Category.GetCategory
 {
-    public class GetCategoryRequest: IRequest<GetCategoryResponse>
+    public class GetCategoryRequest: IRequest<CategoryModelResponse>
     {
         public Guid Id { get; set; }
 
