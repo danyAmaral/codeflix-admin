@@ -40,11 +40,6 @@ namespace Codeflix.Catalog.UnitTests.Application.GetCategory
              GetValidCategoryDescription(),
              GetRandomBoolean()
          );
-
-        public Mock<ICategoryRepository> GetCategoryRepositoryMock()
-        {
-            return new();
-        }
     }
 
     [CollectionDefinition(nameof(GetCategoryTestFixture))]

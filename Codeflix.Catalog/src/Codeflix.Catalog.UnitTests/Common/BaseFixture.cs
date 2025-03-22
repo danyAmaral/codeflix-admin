@@ -1,4 +1,7 @@
 ﻿using Bogus;
+using Codeflix.Catalog.Application.Interfaces;
+using Codeflix.Catalog.Domain.Repository;
+using Moq;
 
 namespace Codeflix.Catalog.UnitTests.Common
 {
@@ -11,5 +14,15 @@ namespace Codeflix.Catalog.UnitTests.Common
 
         public bool GetRandomBoolean()
             => new Random().NextDouble() < 0.5;
+
+        public Mock<ICategoryRepository> GetCategoryRepositoryMock()
+        {
+            return new();
+        }
+
+        public Mock<IUnitOfWork> GetUnitOfWorkMock()
+        {
+            return new();
+        }
     }
 }
